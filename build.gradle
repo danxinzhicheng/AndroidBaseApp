@@ -1,5 +1,4 @@
 apply from: "yc.gradle"
-
 buildscript {
     ext.kotlin_version = '1.3.50'
     repositories {
@@ -26,6 +25,32 @@ allprojects {
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
+//task('danmo',{
+//    println('wangdan111')
+//    doLast({
+//        println('WANGDAN222')
+//    })
+//})
+//task clean(type: Delete) {
+//    delete rootProject.buildDir
+//}
+//
+//class myplugin implements Plugin<Project>{
+//
+//    @Override
+//    void apply(Project target) {
+//
+//        (0..<10).each {
+//            i -> project.task("task"+i){
+//                if(i % 2 == 0){
+//                    dependsOn("danmo")
+//                }
+//                def m = i
+//                doLast{
+//                    println("excuteing task ${m}")
+//                }
+//            }
+//        }
+//    }
+//}
+

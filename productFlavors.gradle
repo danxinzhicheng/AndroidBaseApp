@@ -1,0 +1,106 @@
+android {
+
+
+    productFlavors {
+        //开发人员正常开发处于此环境
+        development {
+            def NIM_APP_KEY = "6ebef7967f1727341d03f3c21ce67344"
+            def CHANNEL = "dev"
+            buildConfigField "String", "CHANNEL", "\"${CHANNEL}\""
+            buildConfigField "String", "BOS_BUCKET", "\"lezhu-test\""
+            buildConfigField "String", "API_SIGN_KEY", "\"756fc1i5028q7d17u2e2ic913elca236\""
+            buildConfigField "String", "CHECK_SERVICE_URL", "\"http://base.lezhu.shop/check/lezhu_dev.json\""
+            buildConfigField "String", "API_HOST", "\"http://dev.lezhu.shop/v6/\""
+            buildConfigField "String", "H5_HOST", "\"http://dev.lezhu.shop/mobile/\""
+            buildConfigField "String", "API_HOST_SMART_SITE", "\"http://dev.lezhuwang.com:9091/wisdom/app/\""
+            buildConfigField "String", "NIM_APP_KEY", "\"${NIM_APP_KEY}\""
+            buildConfigField "String", "NIM_APP_SECRET", "\"1f0e5137be40\""
+            buildConfigField "String", "NIM_USER_PWD", "\"lezhuc256c_dev\""
+            buildConfigField "String", "MINIPROGRAM_TYPE", "\"2\""//// 正式版:0，测试版:1，体验版:2
+
+            manifestPlaceholders = [
+                    UMENG_APPKEY    : "59df210eaed1793ab4000110",
+                    CHANNEL         : CHANNEL,
+                    GETUI_APP_ID    : "EGWvot3liN7NkfpkHu1Gn1",
+                    GETUI_APP_KEY   : "CelTpC7mNtAEDokak32iw3",
+                    GETUI_APP_SECRET: "dbYGEn1Qwp6fYIlQ2YlFB5",
+                    NIM_APP_KEY     : NIM_APP_KEY,
+                    BAIDU_MAP_AK    : "uoLSYFFemRDHzfaMVEFHH3wHe6UYGgpX"]
+            ndk {
+                //  abiFilters "armeabi"
+                abiFilters "armeabi-v7a"
+                // abiFilters "arm64-v8a"
+                abiFilters "x86"
+                abiFilters "x86_64"
+            }
+        }
+
+        //渠道staging，表示调试阶段的发布(用于demo演示，测试人员测试)
+        staging {
+            def NIM_APP_KEY = "ba58986533228bcfd6cc7da88e551e49"
+            def CHANNEL = "test"
+            buildConfigField "String", "CHANNEL", "\"${CHANNEL}\""
+            buildConfigField "String", "BOS_BUCKET", "\"lezhu-test\""
+            buildConfigField "String", "API_SIGN_KEY", "\"756fc1i5028q7d17u2e2ic913elca236\""
+            buildConfigField "String", "CHECK_SERVICE_URL", "\"http://base.lezhu.shop/check/lezhu_test.json\""
+            buildConfigField "String", "API_HOST", "\"https://dev.lezhu.shop/v6/\""
+            buildConfigField "String", "API_HOST_SMART_SITE", "\"http://ok.lezhuwang.com:9090/wisdom/app/\""
+            buildConfigField "String", "H5_HOST", "\"http://test.lezhu.shop/mobile/\""
+            buildConfigField "String", "NIM_APP_KEY", "\"${NIM_APP_KEY}\""
+            buildConfigField "String", "NIM_APP_SECRET", "\"468b8b54ec15\""
+            buildConfigField "String", "NIM_USER_PWD", "\"lezhuc256c_test\""
+            buildConfigField "String", "MINIPROGRAM_TYPE", "\"2\""//// 正式版:0，测试版:1，体验版:2
+
+            manifestPlaceholders = [
+                    UMENG_APPKEY    : "59df210eaed1793ab4000110",
+                    CHANNEL         : CHANNEL,
+                    GETUI_APP_ID    : "EGWvot3liN7NkfpkHu1Gn1",
+                    GETUI_APP_KEY   : "CelTpC7mNtAEDokak32iw3",
+                    GETUI_APP_SECRET: "dbYGEn1Qwp6fYIlQ2YlFB5",
+                    NIM_APP_KEY     : NIM_APP_KEY,
+                    BAIDU_MAP_AK    : "uoLSYFFemRDHzfaMVEFHH3wHe6UYGgpX"]
+            ndk {
+                //abiFilters "armeabi"
+                abiFilters "armeabi-v7a"
+                //  abiFilters "arm64-v8a"
+                abiFilters "x86"
+                abiFilters "x86_64"
+            }
+        }
+
+        //渠道production，表示产品发布阶段的发布
+        production {
+            def NIM_APP_KEY = "c256cdacba51f314bf785a10c029d105"
+            def CHANNEL = "release"
+
+            buildConfigField "String", "CHANNEL", "\"${CHANNEL}\""
+            buildConfigField "String", "BOS_BUCKET", "\"lezhu\""
+            buildConfigField "String", "API_SIGN_KEY", "\"v62fc1i5028q7d17u2e2ic913elca211\""
+            buildConfigField "String", "CHECK_SERVICE_URL", "\"http://base.lezhu.shop/check/lezhu.json\""
+            buildConfigField "String", "API_HOST", "\"https://api.lezhu.shop/v6/\""
+            buildConfigField "String", "H5_HOST", "\"https://h5.lezhu.shop/mobile/\""
+            buildConfigField "String", "API_HOST_SMART_SITE", "\"http://47.96.167.172:8080/wisdom/app/\""
+
+            buildConfigField "String", "NIM_APP_KEY", "\"${NIM_APP_KEY}\""
+            buildConfigField "String", "NIM_APP_SECRET", "\"73dc48e298bd\""
+            buildConfigField "String", "NIM_USER_PWD", "\"lezhuc256c\""
+            buildConfigField "String", "MINIPROGRAM_TYPE", "\"0\""//// 正式版:0，测试版:1，体验版:2
+
+            manifestPlaceholders = [
+                    UMENG_APPKEY    : "59df210eaed1793ab4000110",
+                    CHANNEL         : CHANNEL,
+                    GETUI_APP_ID    : "yB3p5fuYDu9kGnY64fQna4",
+                    GETUI_APP_KEY   : "OnOdNwKqGA7LrBTOCsXTy1",
+                    GETUI_APP_SECRET: "q4YrrN3PI081D6PAFySIb7",
+                    NIM_APP_KEY     : NIM_APP_KEY,
+                    BAIDU_MAP_AK    : "uoLSYFFemRDHzfaMVEFHH3wHe6UYGgpX"]
+            ndk {
+                //   abiFilters "armeabi"
+                abiFilters "armeabi-v7a"
+                //  abiFilters "arm64-v8a"
+                // abiFilters "x86"
+                //  abiFilters "x86_64"
+            }
+        }
+    }
+}

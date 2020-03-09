@@ -1,6 +1,7 @@
 //设置app空壳始终是application模式
 apply plugin: 'com.android.application'
 
+
 android {
     compileSdkVersion rootProject.ext.android["compileSdkVersion"]
     buildToolsVersion rootProject.ext.android["buildToolsVersion"]
@@ -18,90 +19,39 @@ android {
                 arguments = [AROUTER_MODULE_NAME: project.getName()]
             }
         }
-        ndk {
-            abiFilters "armeabi", "armeabi-v7a" //, "x86", "mips"
-        }
         // 64k
         multiDexEnabled true
         // 支持模糊视图
         renderscriptSupportModeEnabled true
+
+        flavorDimensions "serverEnv"
     }
-
-    //签名
-    /*signingConfigs {
-        debug {
-            v1SigningEnabled true
-            v2SigningEnabled true
-            try {
-                def signP = getSigningProperties(true)
-                storeFile file(signP[0])
-                storePassword signP[1]
-                keyAlias signP[2]
-                keyPassword signP[3]
-            } catch (ex) {
-                ex.printStackTrace()
-            }
-        }
-
-        release {
-            v1SigningEnabled true
-            v2SigningEnabled true
-            try {
-                def signP = getSigningProperties(false)
-                storeFile file(signP[0])
-                storePassword signP[1]
-                keyAlias signP[2]
-                keyPassword signP[3]
-            } catch (ex) {
-                ex.printStackTrace()
-            }
-        }
-    }*/
 
     buildTypes {
-        //正式
-        release {
-            buildConfigField "boolean", "IS_DEBUG", "false"
-            buildConfigField "String", "buildTime", "\"" + releaseTime() + "\""
-            buildConfigField "int", "URL_CONFIG", "" + getUrl(2) + ""
-            //混淆
-            minifyEnabled true
-            //Zipalign优化
-            zipAlignEnabled true
-            // 移除无用的resource文件
-            shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-
-        //仿真
-        release {
-            buildConfigField "boolean", "IS_DEBUG", "false"
-            buildConfigField "String", "buildTime", "\"" + releaseTime() + "\""
-            buildConfigField "int", "URL_CONFIG", "" + getUrl(1) + ""
-            //混淆
+        debug {
             minifyEnabled false
             //Zipalign优化
             zipAlignEnabled true
             // 移除无用的resource文件
             shrinkResources false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig getSignInfo("../sign.properties")
         }
-
-        //测试
-        debug{
-            buildConfigField "boolean", "IS_DEBUG", "true"
-            buildConfigField "String", "buildTime", "\"" + releaseTime() + "\""
-            buildConfigField "int", "URL_CONFIG", "" + getUrl(0) + ""
-            //混淆
+        release {
+            signingConfig getSignInfo("../sign.properties")
             minifyEnabled false
             //Zipalign优化
             zipAlignEnabled true
             // 移除无用的resource文件
             shrinkResources false
-
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    productFlavors {
+        apply from: "../productFlavors.gradle"
+    }
+
+    setAssembleApkNmae(applicationVariants)
 
     //jdk1.8
     compileOptions {
@@ -186,8 +136,22 @@ android {
 
 }
 
-static def releaseTime() {
-    return new Date().format("MMddHHmmss", TimeZone.getTimeZone("Asia/Shanghai"))
+def setAssembleApkNmae(applicationVariants) {
+    applicationVariants.all { variant ->
+        //这个修改输出的APK路径
+        if (variant.buildType.name != "debug") {//防止AS无法安装debug包(apk)
+            variant.productFlavors.each { product ->
+                variant.outputs.all { output ->
+                    outputFileName = "APP_" +
+                            variant.versionName + "_" +
+                            variant.versionCode + "_" +
+                            product.name + "_" +
+                            variant.buildType.name +
+                            ".apk"
+                }
+            }
+        }
+    }
 }
 
 dependencies {
@@ -198,55 +162,31 @@ dependencies {
     if (!rootProject.ext.isGankApplication){
         implementation project(':gank')
     }
+    //...添加组件...
 
     implementation project(':library')
     annotationProcessor rootProject.ext.dependencies["router-compiler"]
 }
 
 
-//读取项目中的url.properties配置文件
-static int getUrl(int status) {
-    File propFile = new File('url.properties')//这个文件不可写注释
-    if (propFile.exists()) {
-        Properties props = new Properties()
-        props.load(new FileInputStream(propFile))
-        switch (status) {
-            case 0:
-                return Integer.parseInt(props['TEST_URL'])  //测试
-            case 1:
-                return Integer.parseInt(props['PREVIEW_URL'])//仿真
-            case 2:
-                return Integer.parseInt(props['RELEASE_URL'])//线上
-            default:
-                return Integer.parseInt(props['RELEASE_URL'])//线上
-        }
-    }
-    return 2//线上
-}
-
-
 //读取项目中的sign.properties签名文件，安全
-static String[] getSigningProperties(boolean isDebug) {
-    File propFile = new File('sign.properties')
+def getSignInfo(propFileName) {
+    com.android.build.gradle.internal.dsl.SigningConfig signingConfig = new com.android.build.gradle.internal.dsl.SigningConfig("signInfo")
+    File propFile = file(propFileName)
     if (propFile.exists()) {
         Properties props = new Properties()
         props.load(new FileInputStream(propFile))
-        if (isDebug) {
-            def signP = new String[4]
-            signP[0] = props['DEBUG_STORE_FILE']
-            signP[1] = props['STORE_PASSWORD']
-            signP[2] = props['KEY_ALIAS']
-            signP[3] = props['KEY_PASSWORD']
-            return signP
-        } else {
-            def signP = new String[4]
-            signP[0] = props['STORE_FILE']
-            signP[1] = props['STORE_PASSWORD']
-            signP[2] = props['KEY_ALIAS']
-            signP[3] = props['KEY_PASSWORD']
-            return signP
-        }
+        signingConfig.storeFile = file(props['STORE_FILE'])
+        signingConfig.storePassword = props['STORE_PASSWORD']
+        signingConfig.keyAlias = props['KEY_ALIAS']
+        signingConfig.keyPassword = props['KEY_PASSWORD']
+        signingConfig.v1SigningEnabled = true
+        signingConfig.v2SigningEnabled = true
+    } else {
+        println('给定的路径找不到签名文件' + propFileName)
+        signingConfig = null
     }
+    return signingConfig
 }
 
 

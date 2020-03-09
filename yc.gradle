@@ -1,18 +1,20 @@
 
+int getVersionCode(String style) {
+    return java.lang.Integer.parseInt(new Date().format(style, TimeZone.getTimeZone("GMT+8")))
+}
+
 ext {
 
     isApplication = true  //false:作为Lib组件存在， true:作为application存在，这个不建议改
     isGankApplication = false  //干货模块开关，false:作为Lib组件存在， true:作为application存在
 
-
-    
     android = [
                compileSdkVersion       : 28,
                buildToolsVersion       : "28.0.3",
                minSdkVersion           : 17,
                targetSdkVersion        : 28,
-               versionCode             : 22,
-               versionName             : "1.8.2"    //必须是int或者float，否则影响线上升级
+               versionCode             : getVersionCode("yyyyMMddHH"),
+               versionName             : "6.4.0_beta"    //必须是int或者float，否则影响线上升级
     ]
 
     version = [
