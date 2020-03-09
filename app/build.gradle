@@ -1,7 +1,6 @@
 //设置app空壳始终是application模式
 apply plugin: 'com.android.application'
 
-
 android {
     compileSdkVersion rootProject.ext.android["compileSdkVersion"]
     buildToolsVersion rootProject.ext.android["buildToolsVersion"]
@@ -23,7 +22,6 @@ android {
         multiDexEnabled true
         // 支持模糊视图
         renderscriptSupportModeEnabled true
-
         flavorDimensions "serverEnv"
     }
 
@@ -47,10 +45,12 @@ android {
         }
     }
 
+    //多渠道
     productFlavors {
         apply from: "../productFlavors.gradle"
     }
 
+    //优化生成发布apk名称
     setAssembleApkNmae(applicationVariants)
 
     //jdk1.8
@@ -154,21 +154,6 @@ def setAssembleApkNmae(applicationVariants) {
     }
 }
 
-dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation('com.alibaba.android:vlayout:1.2.2@aar') {
-        transitive = true
-    }
-    if (!rootProject.ext.isGankApplication){
-        implementation project(':gank')
-    }
-    //...添加组件...
-
-    implementation project(':library')
-    annotationProcessor rootProject.ext.dependencies["router-compiler"]
-}
-
-
 //读取项目中的sign.properties签名文件，安全
 def getSignInfo(propFileName) {
     com.android.build.gradle.internal.dsl.SigningConfig signingConfig = new com.android.build.gradle.internal.dsl.SigningConfig("signInfo")
@@ -188,5 +173,22 @@ def getSignInfo(propFileName) {
     }
     return signingConfig
 }
+
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation('com.alibaba.android:vlayout:1.2.2@aar') {
+        transitive = true
+    }
+    if (!rootProject.ext.isGankApplication){
+        implementation project(':gank')
+    }
+    //...添加组件...
+
+    implementation project(':library')
+    annotationProcessor rootProject.ext.dependencies["router-compiler"]
+}
+
+
 
 
